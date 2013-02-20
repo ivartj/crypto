@@ -4,9 +4,6 @@
 #include <string.h>
 #include <arpa/inet.h>
 
-#include <assert.h>
-#include <stdio.h>
-
 #define S(n, X)		(((X) << (n)) | ((X) >> ((32) - (n))))
 
 static unsigned char *sha1pad(const unsigned char *msg, size_t msglen, size_t *rlen);
