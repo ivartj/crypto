@@ -6,8 +6,8 @@
 #define S(n, X)		(((X) << (n)) | ((X) >> ((32) - (n))))
 
 static unsigned char *sha1pad(const unsigned char *msg, size_t msglen, size_t *rlen);
-static uint32_t ntohl(uint32_t num);
-static uint32_t htonl(uint32_t num);
+static uint32_t int_ntohl(uint32_t num);
+static uint32_t int_htonl(uint32_t num);
 
 /* Only works if the bit length is below 2 ^ 32 */
 unsigned char *sha1pad(const unsigned char *msg, size_t msglen, size_t *rlen)
@@ -27,7 +27,7 @@ unsigned char *sha1pad(const unsigned char *msg, size_t msglen, size_t *rlen)
 	val[msglen] = 0x80;
 
 	end = (uint32_t *)(val + len - 4);
-	*end = htonl(msglen * 8);
+	*end = int_htonl(msglen * 8);
 	
 	return val;
 }
@@ -58,7 +58,7 @@ unsigned char *sha1(const unsigned char *msg, size_t msglen, size_t *rlen)
 	for(i = 0; i < Mlen; i += 64) {
 
 		for(t = 0; t < 16; t++)
-			W[t] = ntohl(*(uint32_t *)(M + i + t * 4));
+			W[t] = int_ntohl(*(uint32_t *)(M + i + t * 4));
 		
 
 		for(t = 16; t <= 79; t++)
@@ -106,7 +106,7 @@ unsigned char *sha1(const unsigned char *msg, size_t msglen, size_t *rlen)
 	*rlen = 20;
 
 	for(i = 0; i < 5; i++) {
-		H[i] = htonl(H[i]);
+		H[i] = int_htonl(H[i]);
 	}
 
 	free(M);
@@ -114,7 +114,7 @@ unsigned char *sha1(const unsigned char *msg, size_t msglen, size_t *rlen)
 	return (unsigned char *)H;
 }
 
-uint32_t ntohl(uint32_t num)
+uint32_t int_ntohl(uint32_t num)
 {
 	uint32_t out;
 	unsigned char *b;
@@ -129,7 +129,7 @@ uint32_t ntohl(uint32_t num)
 	return out;
 }
 
-uint32_t htonl(uint32_t num)
+uint32_t int_htonl(uint32_t num)
 {
 	uint32_t out;
 	unsigned char *b;
