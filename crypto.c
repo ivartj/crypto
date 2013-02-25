@@ -2,11 +2,12 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
-#include <arpa/inet.h>
 
 #define S(n, X)		(((X) << (n)) | ((X) >> ((32) - (n))))
 
 static unsigned char *sha1pad(const unsigned char *msg, size_t msglen, size_t *rlen);
+static uint32_t ntohl(uint32_t num);
+static uint32_t htonl(uint32_t num);
 
 /* Only works if the bit length is below 2 ^ 32 */
 unsigned char *sha1pad(const unsigned char *msg, size_t msglen, size_t *rlen)
@@ -111,4 +112,33 @@ unsigned char *sha1(const unsigned char *msg, size_t msglen, size_t *rlen)
 	free(M);
 	
 	return (unsigned char *)H;
+}
+
+uint32_t ntohl(uint32_t num)
+{
+	uint32_t out;
+	unsigned char *b;
+	int i;
+
+	b = (unsigned char *)&num;
+	out = 0;
+
+	for(i = 0; i < sizeof(num); i++)
+		out |= b[sizeof(num) - i - 1] << 8 * i;
+
+	return out;
+}
+
+uint32_t htonl(uint32_t num)
+{
+	uint32_t out;
+	unsigned char *b;
+	int i;
+
+	b = (unsigned char *)&out;
+
+	for(i = 0; i < sizeof(num); i++)
+		b[sizeof(num) - i - 1] = (num >> 8 * i) & 0xFF;
+
+	return out;
 }
